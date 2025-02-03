@@ -9,9 +9,26 @@
 
 BOT_NAME = "scrapy_app"
 
+
 SPIDER_MODULES = ["scrapy_app.spiders"]
 NEWSPIDER_MODULE = "scrapy_app.spiders"
 
+import os
+from dotenv import load_dotenv
+
+DATABASE = {
+    'drivername': 'postgresql',
+    'username': os.getenv('POSTGRES_USER'),
+    'password': os.getenv('POSTGRES_PASSWORD'),
+    'database': os.getenv('POSTGRES_DB'),
+    'host': 'postgres',  # This should match the service name in docker-compose
+    'port': '5432',
+}
+
+# Enable the pipeline
+ITEM_PIPELINES = {
+    'scrapy_app.pipelines.PostgresPipeline': 300,
+}
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = "scrapy_app (+http://www.yourdomain.com)"

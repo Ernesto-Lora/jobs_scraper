@@ -5,25 +5,46 @@
 
 
 # useful for handling different item types with a single interface
-from itemadapter import ItemAdapter
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-import os
+import psycopg2
+from scrapy.exceptions import DropItem
 
 class PostgresPipeline:
-    def __init__(self):
-        self.engine = create_engine(os.getenv('DATABASE_URL'))
-        self.Session = sessionmaker(bind=self.engine)
+    def open_spider(self, spider):
+        # Connect to the PostgreSQL database
+        self.connection = psycopg2.connect(
+            dbname=spider.settings.get('DATABASE')['database'],
+            user=spider.settings.get('DATABASE')['username'],
+            password=spider.settings.get('DATABASE')['password'],
+            host=spider.settings.get('DATABASE')['host'],
+            port=spider.settings.get('DATABASE')['port'],
+        )
+        self.cursor = self.connection.cursor()
+
+        # Create the table if it doesn't exist
+        self.cursor.execute("""
+            CREATE TABLE IF NOT EXISTS quotes (
+                id SERIAL PRIMARY KEY,
+                text TEXT NOT NULL,
+                author TEXT NOT NULL,
+                tags TEXT[]
+            )
+        """)
+        self.connection.commit()
+
+    def close_spider(self, spider):
+        # Close the database connection
+        self.cursor.close()
+        self.connection.close()
 
     def process_item(self, item, spider):
-        session = self.Session()
-        try:
-            job = Job(**item)
-            session.add(job)
-            session.commit()
-        except:
-            session.rollback()
-            raise
-        finally:
-            session.close()
+        # Insert the item into the database
+        self.cursor.execute("""
+            INSERT INTO quotes (text, author, tags)
+            VALUES (%s, %s, %s)
+        """, (
+            item['text'],
+            item['author'],
+            item['tags'],
+        ))
+        self.connection.commit()
         return item
