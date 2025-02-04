@@ -27,7 +27,7 @@ DATABASE = {
 
 # Enable the pipeline
 ITEM_PIPELINES = {
-    'scrapy_app.pipelines.PostgresPipeline': 300,
+   'scrapy_app.pipelines.JobsPipeline': 300,
 }
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent

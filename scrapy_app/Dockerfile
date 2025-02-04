@@ -25,4 +25,4 @@ COPY . .
 ENV PYTHONPATH="/scrapy_app"
 
 # Set the default command to run the spider
-CMD ["scrapy", "crawl", "quotes"]
+CMD ["scrapy", "crawl", "tefl_jobs"]
