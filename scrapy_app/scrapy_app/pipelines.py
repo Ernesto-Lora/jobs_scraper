@@ -58,6 +58,7 @@ def list_to_string(cleaned_list, separator="-"):
     """Joins the cleaned list into a single string with a given separator."""
     return separator.join(cleaned_list)
 
+from scrapy.exceptions import CloseSpider
 
 class JobsPipeline:
     def open_spider(self, spider):
