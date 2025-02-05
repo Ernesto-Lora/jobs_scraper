@@ -5,6 +5,7 @@ services:
     env_file: .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./data:/data
     networks:
       - tefl-network
 
@@ -43,6 +44,16 @@ services:
     command: celery -A tasks beat --loglevel=info
     depends_on:
       - redis
+      - postgres
+    networks:
+      - tefl-network
+
+  fastapi:
+    build: ./fastapi_app
+    env_file: .env
+    ports:
+      - "8000:8000"  # Expose port 8000 on the host
+    depends_on:
       - postgres
     networks:
       - tefl-network

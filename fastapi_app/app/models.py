@@ -8,7 +8,6 @@ class Job(Base):
     job_title = Column(String)
     description = Column(Text)
     salary = Column(String)
-    currency = Column(String)
     requirements = Column(Text)
     benefits = Column(Text)
     location = Column(String)

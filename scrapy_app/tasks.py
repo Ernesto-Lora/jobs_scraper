@@ -12,6 +12,6 @@ def run_spider():
 app.conf.beat_schedule = {
     'run-spider-hourly': {
         'task': 'tasks.run_spider',
-        'schedule': 30.0,  # Every hour
+        'schedule': 3000.0,  # Every hour
     },
 }
