@@ -109,11 +109,13 @@ class JobsPipeline:
                 item['location'],
             ))
             existing_job = self.cursor.fetchone()
-
+            
             if existing_job:
-                spider.logger.info(f"Duplicate job found: {item['job_title']} at {item['business_name']} in {item['location']}. Skipping.")
-                return item
-
+                spider.logger.info(f"Duplicate job found: {item['job_title']} at {item['business_name']} in {item['location']}. Stopping spider.")
+                # Stop the spider immediately
+                spider.crawler.engine.close_spider(spider, 'duplicate_job_found')
+                return item  # Return the item to avoid further processing
+            
             # Insert the item into the database if it doesn't exist
             self.cursor.execute("""
                 INSERT INTO jobs (job_title, description, salary, requirements, benefits, location, business_name)

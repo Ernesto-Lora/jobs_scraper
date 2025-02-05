@@ -3,3 +3,7 @@ SQLAlchemy==2.0.23
 psycopg2-binary==2.9.7
 itemadapter==0.8.0
 python-dotenv==1.0.0
+celery==5.3.4
+redis==4.6.0
+kombu==5.3.4
+billiard==4.1.0

@@ -13,14 +13,36 @@ services:
     networks:
       - tefl-network
 
-  
-
   scrapy:
     build: ./scrapy_app
     env_file: .env
     environment:
       - PYTHONPATH=/scrapy_app
     depends_on:
+      - postgres
+    networks:
+      - tefl-network
+
+  celery_worker:
+    build: ./scrapy_app
+    env_file: .env
+    environment:
+      - PYTHONPATH=/scrapy_app
+    command: celery -A tasks worker --loglevel=info
+    depends_on:
+      - redis
+      - postgres
+    networks:
+      - tefl-network
+
+  celery_beat:
+    build: ./scrapy_app
+    env_file: .env
+    environment:
+      - PYTHONPATH=/scrapy_app
+    command: celery -A tasks beat --loglevel=info
+    depends_on:
+      - redis
       - postgres
     networks:
       - tefl-network
